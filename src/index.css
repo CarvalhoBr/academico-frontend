@@ -6,96 +6,96 @@
 /* Design System - Sistema Acadêmico */
 @layer base {
   :root {
-    /* Academic Color Palette */
-    --background: 248 250 252;
-    --foreground: 15 23 42;
+    /* Clean White Color Palette with Gray Accents */
+    --background: 255 255 255; /* Pure white background */
+    --foreground: 39 39 42; /* Dark gray text (zinc-800) */
 
-    --card: 255 255 255;
-    --card-foreground: 15 23 42;
+    --card: 255 255 255; /* White cards */
+    --card-foreground: 39 39 42; /* Dark gray text */
 
-    --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
+    --popover: 255 255 255; /* White popovers */
+    --popover-foreground: 39 39 42; /* Dark gray text */
 
-    --primary: 30 64 175; /* Blue-700 - Professional Academic */
-    --primary-foreground: 248 250 252;
+    --primary: 82 82 91; /* Medium gray (zinc-600) */
+    --primary-foreground: 255 255 255; /* White text on primary */
 
-    --secondary: 5 150 105; /* Emerald-600 - Educational Green */
-    --secondary-foreground: 255 255 255;
+    --secondary: 244 244 245; /* Light gray (zinc-100) */
+    --secondary-foreground: 39 39 42; /* Dark gray text */
 
-    --muted: 241 245 249;
-    --muted-foreground: 100 116 139;
+    --muted: 250 250 250; /* Very light gray (zinc-50) */
+    --muted-foreground: 113 113 122; /* Medium gray text (zinc-500) */
 
-    --accent: 239 246 255; /* Blue-50 */
-    --accent-foreground: 30 64 175;
+    --accent: 244 244 245; /* Light gray accent (zinc-100) */
+    --accent-foreground: 39 39 42; /* Dark gray text */
 
-    --destructive: 220 38 38;
-    --destructive-foreground: 248 250 252;
+    --destructive: 239 68 68; /* Red for destructive actions */
+    --destructive-foreground: 255 255 255; /* White text on red */
 
-    --success: 34 197 94;
-    --success-foreground: 255 255 255;
+    --success: 34 197 94; /* Green for success */
+    --success-foreground: 255 255 255; /* White text on green */
 
-    --warning: 245 158 11;
-    --warning-foreground: 255 255 255;
+    --warning: 245 158 11; /* Orange for warnings */
+    --warning-foreground: 255 255 255; /* White text on orange */
 
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 30 64 175;
+    --border: 228 228 231; /* Light gray border (zinc-200) */
+    --input: 228 228 231; /* Light gray input border */
+    --ring: 82 82 91; /* Medium gray focus ring */
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     /* Sidebar specific colors */
-    --sidebar-background: 255 255 255;
-    --sidebar-foreground: 51 65 85;
-    --sidebar-primary: 30 64 175;
-    --sidebar-primary-foreground: 248 250 252;
-    --sidebar-accent: 241 245 249;
-    --sidebar-accent-foreground: 51 65 85;
-    --sidebar-border: 226 232 240;
-    --sidebar-ring: 30 64 175;
+    --sidebar-background: 255 255 255; /* White sidebar */
+    --sidebar-foreground: 39 39 42; /* Dark gray text */
+    --sidebar-primary: 82 82 91; /* Medium gray primary */
+    --sidebar-primary-foreground: 255 255 255; /* White text */
+    --sidebar-accent: 250 250 250; /* Very light gray accent */
+    --sidebar-accent-foreground: 39 39 42; /* Dark gray text */
+    --sidebar-border: 228 228 231; /* Light gray border */
+    --sidebar-ring: 82 82 91; /* Medium gray focus ring */
 
-    /* Academic gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(213 94% 68%) 0%, hsl(217 91% 60%) 100%);
-    --gradient-secondary: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(160 84% 39%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(213 100% 96%) 0%, hsl(214 95% 93%) 100%);
+    /* Clean gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(240 4% 46%) 0%, hsl(240 5% 34%) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(240 5% 96%) 0%, hsl(240 4% 94%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(240 5% 96%) 100%);
   }
 
   .dark {
-    --background: 15 23 42;
-    --foreground: 248 250 252;
+    --background: 9 9 11; /* Very dark zinc */
+    --foreground: 250 250 250; /* Light text */
 
-    --card: 30 41 59;
-    --card-foreground: 248 250 252;
+    --card: 24 24 27; /* Dark card background */
+    --card-foreground: 250 250 250; /* Light text */
 
-    --popover: 30 41 59;
-    --popover-foreground: 248 250 252;
+    --popover: 24 24 27; /* Dark popover */
+    --popover-foreground: 250 250 250; /* Light text */
 
-    --primary: 59 130 246;
-    --primary-foreground: 15 23 42;
+    --primary: 161 161 170; /* Light gray in dark mode */
+    --primary-foreground: 9 9 11; /* Dark text on light primary */
 
-    --secondary: 52 211 153;
-    --secondary-foreground: 15 23 42;
+    --secondary: 39 39 42; /* Dark secondary */
+    --secondary-foreground: 250 250 250; /* Light text */
 
-    --muted: 51 65 85;
-    --muted-foreground: 148 163 184;
+    --muted: 24 24 27; /* Dark muted */
+    --muted-foreground: 161 161 170; /* Light muted text */
 
-    --accent: 51 65 85;
-    --accent-foreground: 248 250 252;
+    --accent: 39 39 42; /* Dark accent */
+    --accent-foreground: 250 250 250; /* Light text */
 
-    --destructive: 239 68 68;
-    --destructive-foreground: 248 250 252;
+    --destructive: 239 68 68; /* Red stays the same */
+    --destructive-foreground: 250 250 250; /* Light text */
 
-    --border: 71 85 105;
-    --input: 71 85 105;
-    --ring: 59 130 246;
+    --border: 39 39 42; /* Dark border */
+    --input: 39 39 42; /* Dark input border */
+    --ring: 161 161 170; /* Light gray ring */
 
-    --sidebar-background: 30 41 59;
-    --sidebar-foreground: 203 213 225;
-    --sidebar-primary: 59 130 246;
-    --sidebar-primary-foreground: 15 23 42;
-    --sidebar-accent: 51 65 85;
-    --sidebar-accent-foreground: 203 213 225;
-    --sidebar-border: 71 85 105;
-    --sidebar-ring: 59 130 246;
+    --sidebar-background: 24 24 27; /* Dark sidebar */
+    --sidebar-foreground: 228 228 231; /* Light sidebar text */
+    --sidebar-primary: 161 161 170; /* Light gray primary */
+    --sidebar-primary-foreground: 9 9 11; /* Dark text */
+    --sidebar-accent: 39 39 42; /* Dark accent */
+    --sidebar-accent-foreground: 228 228 231; /* Light text */
+    --sidebar-border: 39 39 42; /* Dark border */
+    --sidebar-ring: 161 161 170; /* Light ring */
   }
 }
 

@@ -33,8 +33,8 @@ const StatsCard = ({
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
-        <div className="p-2 bg-gradient-primary rounded-lg">
-          <Icon className="h-4 w-4 text-white" />
+        <div className="p-2 bg-primary rounded-lg">
+          <Icon className="h-4 w-4 text-primary-foreground" />
         </div>
       </CardHeader>
       <CardContent>

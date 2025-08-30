@@ -9,18 +9,25 @@ import { toast } from 'sonner';
 import { GraduationCap, Loader2 } from 'lucide-react';
 
 const LoginForm = () => {
-  const { login, isLoading } = useAuth();
+  const { login, isLoading, error } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validação básica
+    if (!email.trim() || !password.trim()) {
+      toast.error('Por favor, preencha todos os campos.');
+      return;
+    }
+    
     try {
       await login(email, password);
       toast.success('Login realizado com sucesso!');
     } catch (error) {
-      toast.error('Erro ao fazer login. Verifique suas credenciais.');
+      // O erro já é tratado no contexto, apenas exibir toast
+      toast.error(error instanceof Error ? error.message : 'Erro ao fazer login. Verifique suas credenciais.');
     }
   };
 

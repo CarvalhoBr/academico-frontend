@@ -3,9 +3,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { AuthUser } from '@/types/academic';
 import { apiService, ApiException } from '@/services/api';
 import { setAuthToken, removeAuthToken, getAuthToken, isAuthenticated } from '@/config/api';
+import { Resource, UserData } from '@/types/permissions';
 
 interface AuthContextType {
   user: AuthUser | null;
+  resources: Resource[];
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
@@ -16,6 +18,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,15 +30,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         // Verificar se há token de acesso armazenado
         if (isAuthenticated()) {
-          // Tentar obter informações do usuário atual
-          const userData = await apiService.auth.me();
-          setUser(userData as AuthUser);
+          // Obter informações completas do usuário e permissões
+          const whoamiResponse = await apiService.auth.whoami();
+          
+          if (whoamiResponse.success) {
+            const { user: userData, resources: userResources } = whoamiResponse.data;
+            
+            // Converter UserData para AuthUser (compatibilidade)
+            const authUser: AuthUser = {
+              id: userData.id,
+              name: userData.name,
+              email: userData.email,
+              role: userData.role as any, // Manter compatibilidade com tipos existentes
+            };
+            
+            setUser(authUser);
+            setResources(userResources);
+            localStorage.setItem('academic_user', JSON.stringify(authUser));
+            localStorage.setItem('user_resources', JSON.stringify(userResources));
+          }
         }
       } catch (error) {
-        console.error('Erro ao inicializar autenticação:', error);
-        // Se houver erro, remover token inválido
+        // Se houver erro, remover token e dados inválidos
         removeAuthToken();
         localStorage.removeItem('academic_user');
+        localStorage.removeItem('user_resources');
+        setUser(null);
+        setResources([]);
       } finally {
         setIsLoading(false);
       }
@@ -52,12 +73,45 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Fazer requisição de login para a API
       const response = await apiService.auth.login({ email, password });
       
-      // Salvar o token de acesso no localStorage
-      setAuthToken(response.access_token);
+      // O access_token está dentro de response.data
+      const { access_token: accessToken, user: loginUser } = response.data;
       
-      // Salvar informações do usuário
-      setUser(response.user as AuthUser);
-      localStorage.setItem('academic_user', JSON.stringify(response.user));
+      if (!accessToken) {
+        throw new Error('Token de acesso não encontrado na resposta da API');
+      }
+      
+      // Salvar o token de acesso no localStorage
+      setAuthToken(accessToken);
+      
+      // Após login bem-sucedido, obter permissões completas
+      const whoamiResponse = await apiService.auth.whoami();
+      
+      if (whoamiResponse.success) {
+        const { user: userData, resources: userResources } = whoamiResponse.data;
+        
+        // Converter UserData para AuthUser (compatibilidade)
+        const authUser: AuthUser = {
+          id: userData.id,
+          name: userData.name,
+          email: userData.email,
+          role: userData.role as any,
+        };
+        
+        setUser(authUser);
+        setResources(userResources);
+        localStorage.setItem('academic_user', JSON.stringify(authUser));
+        localStorage.setItem('user_resources', JSON.stringify(userResources));
+      } else {
+        // Fallback para dados básicos do login se whoami falhar
+        const fallbackUser: AuthUser = {
+          id: loginUser.id,
+          name: loginUser.name,
+          email: loginUser.email,
+          role: loginUser.role as any,
+        };
+        setUser(fallbackUser);
+        localStorage.setItem('academic_user', JSON.stringify(fallbackUser));
+      }
       
     } catch (error) {
       // Tratar erros da API
@@ -84,19 +138,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         await apiService.auth.logout();
       }
     } catch (error) {
-      console.error('Erro ao fazer logout na API:', error);
       // Continuar com logout local mesmo se a API falhar
     } finally {
       // Limpar dados locais
       setUser(null);
+      setResources([]);
       removeAuthToken();
       localStorage.removeItem('academic_user');
+      localStorage.removeItem('user_resources');
       setIsLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading, error }}>
+    <AuthContext.Provider value={{ user, resources, login, logout, isLoading, error }}>
       {children}
     </AuthContext.Provider>
   );

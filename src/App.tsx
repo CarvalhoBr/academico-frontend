@@ -5,11 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import AppLayout from "@/components/layout/AppLayout";
-import Dashboard from "@/pages/Dashboard";
-import Users from "@/pages/Users";
-import Courses from "@/pages/Courses";
-import NotFound from "./pages/NotFound";
+import AuthenticatedApp from "@/components/layout/AuthenticatedApp";
 
 const queryClient = new QueryClient();
 
@@ -20,18 +16,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <AuthProvider>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/courses" element={<Courses />} />
-              {/* Placeholder routes for future pages */}
-              <Route path="/semesters" element={<Dashboard />} />
-              <Route path="/subjects" element={<Dashboard />} />
-              <Route path="/enrollments" element={<Dashboard />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AppLayout>
+          <AuthenticatedApp />
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

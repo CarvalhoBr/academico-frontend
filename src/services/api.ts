@@ -1,4 +1,5 @@
 import { API_CONFIG, getAuthToken } from '@/config/api';
+import { WhoAmIResponse } from '@/types/permissions';
 
 // Tipos para as requisições
 export interface LoginRequest {
@@ -7,12 +8,14 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  access_token: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
+  data: {
+    access_token: string;
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+    };
   };
 }
 
@@ -128,8 +131,15 @@ export const apiService = {
     /**
      * Obtém informações do usuário atual
      */
-    async me(): Promise<LoginResponse['user']> {
-      return apiRequest<LoginResponse['user']>(API_CONFIG.ENDPOINTS.AUTH.ME);
+    async me(): Promise<LoginResponse['data']['user']> {
+      return apiRequest<LoginResponse['data']['user']>(API_CONFIG.ENDPOINTS.AUTH.ME);
+    },
+
+    /**
+     * Obtém informações completas do usuário e suas permissões
+     */
+    async whoami(): Promise<WhoAmIResponse> {
+      return apiRequest<WhoAmIResponse>(API_CONFIG.ENDPOINTS.AUTH.WHOAMI);
     },
 
     /**

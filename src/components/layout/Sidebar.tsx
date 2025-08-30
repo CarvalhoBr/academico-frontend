@@ -3,6 +3,8 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePermissions } from '@/contexts/PermissionsContext';
+import { RESOURCE_ROUTES } from '@/types/permissions';
 import { 
   GraduationCap, 
   LayoutDashboard, 
@@ -22,51 +24,43 @@ interface SidebarProps {
 
 const Sidebar = ({ className }: SidebarProps) => {
   const { user, logout } = useAuth();
+  const { getAvailableResources, hasPermission } = usePermissions();
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Mapear recursos para ícones
+  const getResourceIcon = (resourceName: string) => {
+    switch (resourceName) {
+      case 'users': return Users;
+      case 'courses': return BookOpen;
+      case 'semesters': return Calendar;
+      case 'subjects': return FileText;
+      case 'enrollments': return UserCheck;
+      case 'reports': return FileText;
+      default: return FileText;
+    }
+  };
+
+  // Criar itens de navegação baseados nas permissões do usuário
   const navigationItems = [
     {
       title: 'Dashboard',
       icon: LayoutDashboard,
       path: '/',
-      roles: ['admin', 'coordinator', 'teacher', 'student']
+      isAllowed: true // Dashboard sempre visível
     },
-    {
-      title: 'Usuários',
-      icon: Users,
-      path: '/users',
-      roles: ['admin', 'coordinator']
-    },
-    {
-      title: 'Cursos',
-      icon: BookOpen,
-      path: '/courses',
-      roles: ['admin', 'coordinator']
-    },
-    {
-      title: 'Semestres',
-      icon: Calendar,
-      path: '/semesters',
-      roles: ['admin', 'coordinator', 'teacher']
-    },
-    {
-      title: 'Disciplinas',
-      icon: FileText,
-      path: '/subjects',
-      roles: ['admin', 'coordinator', 'teacher', 'student']
-    },
-    {
-      title: 'Matrículas',
-      icon: UserCheck,
-      path: '/enrollments',
-      roles: ['admin', 'coordinator', 'teacher', 'student']
-    }
+    ...getAvailableResources()
+      .filter(resource => hasPermission(resource.name, 'read')) // Só mostrar se tem permissão de leitura
+      .map(resource => ({
+        title: resource.label,
+        icon: getResourceIcon(resource.name),
+        path: RESOURCE_ROUTES[resource.name] || `/${resource.name}`,
+        isAllowed: true,
+        resource: resource.name
+      }))
   ];
 
-  const filteredItems = navigationItems.filter(item => 
-    item.roles.includes(user?.role || '')
-  );
+  const filteredItems = navigationItems.filter(item => item.isAllowed);
 
   const getRoleDisplayName = (role: string) => {
     const roleNames = {

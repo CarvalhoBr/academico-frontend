@@ -19,6 +19,7 @@ export const API_CONFIG = {
       LOGOUT: '/auth/logout',
       REFRESH: '/auth/refresh',
       ME: '/auth/me',
+      WHOAMI: '/auth/whoami',
     },
     USERS: '/users',
     COURSES: '/courses',

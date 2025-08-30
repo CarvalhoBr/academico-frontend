@@ -6,6 +6,7 @@ import AppLayout from './AppLayout';
 import Dashboard from '@/pages/Dashboard';
 import Users from '@/pages/Users';
 import Courses from '@/pages/Courses';
+import CourseDetail from '@/pages/CourseDetail';
 import NotFound from '@/pages/NotFound';
 
 const AuthenticatedApp = () => {
@@ -18,6 +19,7 @@ const AuthenticatedApp = () => {
           <Route path="/" element={<Dashboard />} />
           <Route path="/users" element={<Users />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/courses/:id" element={<CourseDetail />} />
           {/* Placeholder routes for future pages */}
           <Route path="/semesters" element={<Dashboard />} />
           <Route path="/subjects" element={<Dashboard />} />

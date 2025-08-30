@@ -1,5 +1,6 @@
 import { API_CONFIG, getAuthToken } from '@/config/api';
 import { WhoAmIResponse } from '@/types/permissions';
+import { CoursesListResponse, CourseDetailResponse } from '@/types/course';
 
 // Tipos para as requisições
 export interface LoginRequest {
@@ -196,8 +197,15 @@ export const apiService = {
     /**
      * Lista todos os cursos
      */
-    async list(): Promise<any[]> {
-      return apiRequest<any[]>(API_CONFIG.ENDPOINTS.COURSES);
+    async list(): Promise<CoursesListResponse> {
+      return apiRequest<CoursesListResponse>(API_CONFIG.ENDPOINTS.COURSES);
+    },
+
+    /**
+     * Obtém detalhes de um curso específico com semestres e alunos
+     */
+    async getById(id: string): Promise<CourseDetailResponse> {
+      return apiRequest<CourseDetailResponse>(`${API_CONFIG.ENDPOINTS.COURSES}/${id}`);
     },
 
     /**

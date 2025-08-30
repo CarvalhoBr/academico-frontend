@@ -33,7 +33,7 @@ const LoginForm = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-emerald-50 p-4">
       <div className="w-full max-w-md animate-fade-in">
         <div className="text-center mb-8">
-          <div className="mx-auto w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mb-4">
+          <div className="mx-auto w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-4">
             <GraduationCap className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-foreground">Sistema Acadêmico</h1>
@@ -73,7 +73,7 @@ const LoginForm = () => {
               </div>
               <Button 
                 type="submit" 
-                className="w-full gradient-primary text-white hover:opacity-90 transition-opacity"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 disabled={isLoading}
               >
                 {isLoading ? (

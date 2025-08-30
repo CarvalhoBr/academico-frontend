@@ -85,7 +85,7 @@ const Sidebar = ({ className }: SidebarProps) => {
     )}>
       {/* Header */}
       <div className="flex items-center gap-3 border-b px-6 py-4">
-        <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+        <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
           <GraduationCap className="h-5 w-5 text-white" />
         </div>
         <div className="flex flex-col">
@@ -122,7 +122,7 @@ const Sidebar = ({ className }: SidebarProps) => {
       {/* User Info & Logout */}
       <div className="border-t p-4 space-y-3">
         <div className="flex items-center gap-3 px-2">
-          <div className="w-8 h-8 rounded-full bg-gradient-secondary flex items-center justify-center text-white text-sm font-medium">
+          <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-sm font-medium">
             {user?.name.charAt(0).toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">

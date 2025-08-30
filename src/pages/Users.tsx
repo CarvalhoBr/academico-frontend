@@ -126,7 +126,7 @@ const Users = () => {
             Gerencie usuários do sistema acadêmico
           </p>
         </div>
-        <Button className="gradient-primary text-white hover:opacity-90">
+        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="mr-2 h-4 w-4" />
           Novo Usuário
         </Button>
@@ -185,7 +185,7 @@ const Users = () => {
                 >
                   <TableCell className="font-medium">
                     <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-gradient-secondary flex items-center justify-center text-white text-sm font-medium">
+                      <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-sm font-medium">
                         {user.name.charAt(0).toUpperCase()}
                       </div>
                       <span>{user.name}</span>

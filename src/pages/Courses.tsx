@@ -104,7 +104,7 @@ const Courses = () => {
             Gerencie os cursos do sistema acadêmico
           </p>
         </div>
-        <Button className="gradient-primary text-white hover:opacity-90">
+        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
           <Plus className="mr-2 h-4 w-4" />
           Novo Curso
         </Button>
@@ -146,7 +146,7 @@ const Courses = () => {
                 <div className="flex items-start justify-between">
                   <div className="space-y-1 flex-1">
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+                      <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                         <BookOpen className="h-4 w-4 text-white" />
                       </div>
                       {course.name}

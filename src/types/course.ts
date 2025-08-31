@@ -74,6 +74,33 @@ export interface SubjectsResponse {
   message: string;
 }
 
+// Tipos para semestres
+export interface SemesterListItem {
+  id: string;
+  code: string;
+  start_date: string;
+  end_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SemestersListResponse {
+  success: boolean;
+  data: SemesterListItem[];
+  message: string;
+}
+
+export interface CreateSemesterRequest {
+  code: string;
+  startDate: string;
+  endDate: string;
+}
+
+export interface UpdateSemesterRequest {
+  startDate: string;
+  endDate: string;
+}
+
 export interface CourseStats {
   totalStudents: number;
   totalSemesters: number;

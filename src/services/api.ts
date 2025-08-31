@@ -1,6 +1,13 @@
 import { API_CONFIG, getAuthToken } from '@/config/api';
 import { WhoAmIResponse } from '@/types/permissions';
-import { CoursesListResponse, CourseDetailResponse, SubjectsResponse } from '@/types/course';
+import { 
+  CoursesListResponse, 
+  CourseDetailResponse, 
+  SubjectsResponse,
+  SemestersListResponse,
+  CreateSemesterRequest,
+  UpdateSemesterRequest
+} from '@/types/course';
 
 // Tipos para as requisições
 export interface LoginRequest {
@@ -242,6 +249,45 @@ export const apiService = {
      */
     async getSubjects(courseId: string, semesterId: string): Promise<SubjectsResponse> {
       return apiRequest<SubjectsResponse>(`${API_CONFIG.ENDPOINTS.COURSES}/${courseId}/${semesterId}/subjects`);
+    },
+  },
+
+  // Semestres
+  semesters: {
+    /**
+     * Lista todos os semestres
+     */
+    async list(): Promise<SemestersListResponse> {
+      return apiRequest<SemestersListResponse>(API_CONFIG.ENDPOINTS.SEMESTERS);
+    },
+
+    /**
+     * Cria um novo semestre
+     */
+    async create(data: CreateSemesterRequest): Promise<any> {
+      return apiRequest<any>(API_CONFIG.ENDPOINTS.SEMESTERS, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+
+    /**
+     * Atualiza um semestre
+     */
+    async update(id: string, data: UpdateSemesterRequest): Promise<any> {
+      return apiRequest<any>(`${API_CONFIG.ENDPOINTS.SEMESTERS}/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      });
+    },
+
+    /**
+     * Remove um semestre
+     */
+    async delete(id: string): Promise<void> {
+      return apiRequest<void>(`${API_CONFIG.ENDPOINTS.SEMESTERS}/${id}`, {
+        method: 'DELETE',
+      });
     },
   },
 };

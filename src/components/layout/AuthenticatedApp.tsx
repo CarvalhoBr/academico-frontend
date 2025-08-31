@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import AppLayout from './AppLayout';
 import Dashboard from '@/pages/Dashboard';
 import Users from '@/pages/Users';
+import EditUser from '@/pages/EditUser';
 import Courses from '@/pages/Courses';
 import CourseDetail from '@/pages/CourseDetail';
 import Subjects from '@/pages/Subjects';
@@ -20,6 +21,7 @@ const AuthenticatedApp = () => {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users/:userId/edit" element={<EditUser />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
           <Route path="/courses/:courseId/semesters/:semesterId/subjects" element={<Subjects />} />

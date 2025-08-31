@@ -6,8 +6,17 @@ import {
   SubjectsResponse,
   SemestersListResponse,
   CreateSemesterRequest,
-  UpdateSemesterRequest
+  UpdateSemesterRequest,
+  TeachersResponse,
+  CreateSubjectRequest
 } from '@/types/course';
+import { 
+  UsersListResponse, 
+  UserDetailResponse, 
+  UserCoursesResponse,
+  UserUpdateRequest,
+  UserCourseRequest
+} from '@/types/academic';
 
 // Tipos para as requisições
 export interface LoginRequest {
@@ -165,8 +174,15 @@ export const apiService = {
     /**
      * Lista todos os usuários
      */
-    async list(): Promise<any[]> {
-      return apiRequest<any[]>(API_CONFIG.ENDPOINTS.USERS);
+    async list(): Promise<UsersListResponse> {
+      return apiRequest<UsersListResponse>(API_CONFIG.ENDPOINTS.USERS);
+    },
+
+    /**
+     * Obtém um usuário específico
+     */
+    async getById(id: string): Promise<UserDetailResponse> {
+      return apiRequest<UserDetailResponse>(`${API_CONFIG.ENDPOINTS.USERS}/${id}`);
     },
 
     /**
@@ -182,8 +198,8 @@ export const apiService = {
     /**
      * Atualiza um usuário
      */
-    async update(id: string, user: any): Promise<any> {
-      return apiRequest<any>(`${API_CONFIG.ENDPOINTS.USERS}/${id}`, {
+    async update(id: string, user: UserUpdateRequest): Promise<UserDetailResponse> {
+      return apiRequest<UserDetailResponse>(`${API_CONFIG.ENDPOINTS.USERS}/${id}`, {
         method: 'PUT',
         body: JSON.stringify(user),
       });
@@ -194,6 +210,32 @@ export const apiService = {
      */
     async delete(id: string): Promise<void> {
       return apiRequest<void>(`${API_CONFIG.ENDPOINTS.USERS}/${id}`, {
+        method: 'DELETE',
+      });
+    },
+
+    /**
+     * Obtém os cursos vinculados a um usuário
+     */
+    async getCourses(userId: string): Promise<UserCoursesResponse> {
+      return apiRequest<UserCoursesResponse>(`${API_CONFIG.ENDPOINTS.USERS}/${userId}/courses`);
+    },
+
+    /**
+     * Adiciona um curso a um usuário
+     */
+    async addCourse(userId: string, courseId: string): Promise<UserCoursesResponse> {
+      return apiRequest<UserCoursesResponse>(`${API_CONFIG.ENDPOINTS.USERS}/${userId}/courses`, {
+        method: 'POST',
+        body: JSON.stringify({ courseId }),
+      });
+    },
+
+    /**
+     * Remove um curso de um usuário
+     */
+    async removeCourse(userId: string, courseId: string): Promise<UserCoursesResponse> {
+      return apiRequest<UserCoursesResponse>(`${API_CONFIG.ENDPOINTS.USERS}/${userId}/courses/${courseId}`, {
         method: 'DELETE',
       });
     },
@@ -249,6 +291,23 @@ export const apiService = {
      */
     async getSubjects(courseId: string, semesterId: string): Promise<SubjectsResponse> {
       return apiRequest<SubjectsResponse>(`${API_CONFIG.ENDPOINTS.COURSES}/${courseId}/${semesterId}/subjects`);
+    },
+
+    /**
+     * Obtém os professores de um curso
+     */
+    async getTeachers(courseId: string): Promise<TeachersResponse> {
+      return apiRequest<TeachersResponse>(`${API_CONFIG.ENDPOINTS.COURSES}/${courseId}/teachers`);
+    },
+
+    /**
+     * Cria uma nova disciplina
+     */
+    async createSubject(courseId: string, subject: CreateSubjectRequest): Promise<any> {
+      return apiRequest<any>(`${API_CONFIG.ENDPOINTS.COURSES}/${courseId}/subjects`, {
+        method: 'POST',
+        body: JSON.stringify(subject),
+      });
     },
   },
 

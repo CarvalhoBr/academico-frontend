@@ -56,6 +56,7 @@ O sistema de permissões é baseado em **recursos** e **ações**. Cada usuário
 | `import` | Importar dados |
 | `approve` | Aprovar solicitações |
 | `reject` | Rejeitar solicitações |
+| `createSubject` | Criar disciplinas (específico para cursos) |
 
 ## Como Usar
 
@@ -69,6 +70,9 @@ const MyComponent = () => {
   
   // Verificar se pode criar usuários
   const canCreateUsers = hasPermission('users', 'create');
+  
+  // Verificar se pode criar disciplinas
+  const canCreateSubjects = hasPermission('courses', 'createSubject');
   
   // Obter todos os recursos disponíveis
   const resources = getAvailableResources();

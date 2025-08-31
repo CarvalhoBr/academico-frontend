@@ -21,11 +21,13 @@ import {
   Loader2,
   CalendarDays,
   User,
-  Eye
+  Eye,
+  FileText
 } from 'lucide-react';
 import { CourseDetail, Semester, Student } from '@/types/course';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
+import SubjectsList from '@/components/subjects/SubjectsList';
 
 const CourseDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -97,10 +99,6 @@ const CourseDetails = () => {
   }
 
   const currentSemester = getCurrentSemester(course.semesters);
-
-  const handleViewSubjects = (semesterId: string) => {
-    navigate(`/courses/${course.id}/semesters/${semesterId}/subjects`);
-  };
 
   return (
     <div className="flex-1 space-y-6 p-6 animate-fade-in">
@@ -204,11 +202,11 @@ const CourseDetails = () => {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="semesters" className="space-y-6">
+      <Tabs defaultValue="subjects" className="space-y-6">
         <TabsList>
-          <TabsTrigger value="semesters" className="flex items-center gap-2">
-            <CalendarDays className="h-4 w-4" />
-            Semestres ({course.semesters.length})
+          <TabsTrigger value="subjects" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Disciplinas
           </TabsTrigger>
           <TabsTrigger value="students" className="flex items-center gap-2">
             <User className="h-4 w-4" />
@@ -216,74 +214,9 @@ const CourseDetails = () => {
           </TabsTrigger>
         </TabsList>
 
-        {/* Semestres Tab */}
-        <TabsContent value="semesters">
-          <Card>
-            <CardHeader>
-              <CardTitle>Semestres do Curso</CardTitle>
-              <CardDescription>
-                Lista de todos os semestres cadastrados para este curso
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {course.semesters.length === 0 ? (
-                <div className="text-center py-8">
-                  <CalendarDays className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">Nenhum semestre cadastrado</p>
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Código</TableHead>
-                      <TableHead>Data de Início</TableHead>
-                      <TableHead>Data de Fim</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {course.semesters.map((semester) => {
-                      const now = new Date();
-                      const start = new Date(semester.start_date);
-                      const end = new Date(semester.end_date);
-                      const isActive = now >= start && now <= end;
-                      const isPast = now > end;
-                      const isFuture = now < start;
-                      
-                      return (
-                        <TableRow key={semester.id}>
-                          <TableCell className="font-medium">
-                            {semester.code}
-                          </TableCell>
-                          <TableCell>{formatDate(semester.start_date)}</TableCell>
-                          <TableCell>{formatDate(semester.end_date)}</TableCell>
-                          <TableCell>
-                            <Badge 
-                              variant={isActive ? 'default' : isPast ? 'secondary' : 'outline'}
-                            >
-                              {isActive ? 'Ativo' : isPast ? 'Finalizado' : 'Futuro'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleViewSubjects(semester.id)}
-                              className="flex items-center gap-1"
-                            >
-                              <Eye className="h-3 w-3" />
-                              Disciplinas
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
+        {/* Disciplinas Tab */}
+        <TabsContent value="subjects">
+          <SubjectsList courseId={course.id} semesters={course.semesters} />
         </TabsContent>
 
         {/* Estudantes Tab */}

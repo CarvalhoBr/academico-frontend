@@ -8,7 +8,8 @@ export type ResourceAction =
   | 'export'
   | 'import'
   | 'approve'
-  | 'reject';
+  | 'reject'
+  | 'createSubject';
 
 export interface Resource {
   name: string;

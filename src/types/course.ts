@@ -20,6 +20,16 @@ export interface Student {
   updated_at: string;
 }
 
+export interface Teacher {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  course_id: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Course {
   id: string;
   name: string;
@@ -50,6 +60,12 @@ export interface CourseDetailResponse {
   message: string;
 }
 
+export interface TeachersResponse {
+  success: boolean;
+  data: Teacher[];
+  message: string;
+}
+
 // Tipos para estatísticas
 export interface Subject {
   id: string;
@@ -72,6 +88,14 @@ export interface SubjectsResponse {
   success: boolean;
   data: Subject[];
   message: string;
+}
+
+export interface CreateSubjectRequest {
+  name: string;
+  code: string;
+  credits: number;
+  semesterId: string;
+  teacherId: string;
 }
 
 // Tipos para semestres

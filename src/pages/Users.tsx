@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,67 +24,45 @@ import {
   MoreHorizontal
 } from 'lucide-react';
 import { User as UserType } from '@/types/academic';
+import { apiService } from '@/services/api';
+import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Loader2 } from 'lucide-react';
 
 const Users = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  
-  // Mock data - replace with API call
-  const mockUsers: UserType[] = [
-    {
-      id: '1',
-      name: 'João Silva',
-      email: 'joao@academic.com',
-      role: 'admin',
-      createdAt: '2025-01-15T10:00:00Z',
-      updatedAt: '2025-01-15T10:00:00Z'
-    },
-    {
-      id: '2',
-      name: 'Maria Santos',
-      email: 'maria@academic.com',
-      role: 'coordinator',
-      courseId: 'course-1',
-      courseName: 'Ciência da Computação',
-      createdAt: '2025-01-14T14:30:00Z',
-      updatedAt: '2025-01-14T14:30:00Z'
-    },
-    {
-      id: '3',
-      name: 'Pedro Costa',
-      email: 'pedro@academic.com',
-      role: 'teacher',
-      courseId: 'course-1',
-      courseName: 'Ciência da Computação',
-      createdAt: '2025-01-13T09:15:00Z',
-      updatedAt: '2025-01-13T09:15:00Z'
-    },
-    {
-      id: '4',
-      name: 'Ana Oliveira',
-      email: 'ana@academic.com',
-      role: 'student',
-      courseId: 'course-1',
-      courseName: 'Ciência da Computação',
-      createdAt: '2025-01-12T16:45:00Z',
-      updatedAt: '2025-01-12T16:45:00Z'
-    },
-    {
-      id: '5',
-      name: 'Carlos Ferreira',
-      email: 'carlos@academic.com',
-      role: 'student',
-      courseId: 'course-2',
-      courseName: 'Sistemas de Informação',
-      createdAt: '2025-01-11T11:20:00Z',
-      updatedAt: '2025-01-11T11:20:00Z'
+  const [users, setUsers] = useState<UserType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await apiService.users.list();
+      if (response.success) {
+        setUsers(response.data);
+      } else {
+        throw new Error(response.message || 'Erro ao carregar usuários');
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Erro ao carregar usuários';
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-  ];
+  };
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
@@ -110,7 +89,7 @@ const Users = () => {
     return roleNames[role as keyof typeof roleNames] || role;
   };
 
-  const filteredUsers = mockUsers.filter(user =>
+  const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     getRoleDisplayName(user.role).toLowerCase().includes(searchTerm.toLowerCase())
@@ -161,86 +140,114 @@ const Users = () => {
             Lista de Usuários
           </CardTitle>
           <CardDescription>
-            {filteredUsers.length} usuário(s) encontrado(s)
+            {isLoading ? 'Carregando...' : `${filteredUsers.length} usuário(s) encontrado(s)`}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nome</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Perfil</TableHead>
-                <TableHead>Curso</TableHead>
-                <TableHead>Data de Criação</TableHead>
-                <TableHead className="w-[100px]">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredUsers.map((user, index) => (
-                <TableRow 
-                  key={user.id}
-                  className="animate-slide-up"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <TableCell className="font-medium">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-sm font-medium">
-                        {user.name.charAt(0).toUpperCase()}
-                      </div>
-                      <span>{user.name}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      <Mail className="h-4 w-4 text-muted-foreground" />
-                      <span>{user.email}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getRoleBadgeVariant(user.role)}>
-                      {getRoleDisplayName(user.role)}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {user.courseName ? (
-                      <span className="text-sm text-muted-foreground">
-                        {user.courseName}
-                      </span>
-                    ) : (
-                      <span className="text-sm text-muted-foreground italic">
-                        Não aplicável
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-sm text-muted-foreground">
-                      {new Date(user.createdAt).toLocaleDateString('pt-BR')}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                          <Edit className="mr-2 h-4 w-4" />
-                          Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          <Trash2 className="mr-2 h-4 w-4" />
-                          Excluir
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <Loader2 className="h-12 w-12 animate-spin text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">Carregando usuários...</h3>
+              <p className="text-muted-foreground text-center">
+                Aguarde enquanto carregamos a lista de usuários.
+              </p>
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="text-destructive mb-4">
+                <User className="h-12 w-12 mx-auto mb-2" />
+                <p className="text-center">{error}</p>
+              </div>
+              <Button onClick={fetchUsers} variant="outline">
+                Tentar novamente
+              </Button>
+            </div>
+          ) : filteredUsers.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <User className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">Nenhum usuário encontrado</h3>
+              <p className="text-muted-foreground text-center">
+                {searchTerm ? 'Nenhum usuário corresponde aos critérios de busca.' : 'Não há usuários cadastrados no sistema.'}
+              </p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Perfil</TableHead>
+                  <TableHead>Curso</TableHead>
+                  <TableHead>Data de Criação</TableHead>
+                  <TableHead className="w-[100px]">Ações</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredUsers.map((user, index) => (
+                  <TableRow 
+                    key={user.id}
+                    className="animate-slide-up"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <TableCell className="font-medium">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground text-sm font-medium">
+                          {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <span>{user.name}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-2">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                        <span>{user.email}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getRoleBadgeVariant(user.role)}>
+                        {getRoleDisplayName(user.role)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {user.courseName ? (
+                        <span className="text-sm text-muted-foreground">
+                          {user.courseName}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-muted-foreground italic">
+                          Não aplicável
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <span className="text-sm text-muted-foreground">
+                        {new Date(user.created_at).toLocaleDateString('pt-BR')}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => navigate(`/users/${user.id}/edit`)}>
+                            <Edit className="mr-2 h-4 w-4" />
+                            Editar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive">
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Excluir
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

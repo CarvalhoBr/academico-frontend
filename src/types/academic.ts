@@ -6,8 +6,8 @@ export interface User {
   role: 'student' | 'teacher' | 'coordinator' | 'admin';
   courseId?: string;
   courseName?: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Course {
@@ -62,6 +62,7 @@ export interface AuthUser {
   email: string;
   role: User['role'];
   courseId?: string;
+  courseName?: string;
 }
 
 export interface DashboardStats {
@@ -69,4 +70,32 @@ export interface DashboardStats {
   totalCourses: number;
   totalSubjects: number;
   totalEnrollments: number;
+}
+
+export interface UsersListResponse {
+  success: boolean;
+  data: User[];
+  message: string;
+}
+
+export interface UserDetailResponse {
+  success: boolean;
+  data: User;
+  message: string;
+}
+
+export interface UserCoursesResponse {
+  success: boolean;
+  data: Course[];
+  message: string;
+}
+
+export interface UserUpdateRequest {
+  name: string;
+  email: string;
+  role: User['role'];
+}
+
+export interface UserCourseRequest {
+  courseId: string;
 }

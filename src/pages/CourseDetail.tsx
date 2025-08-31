@@ -20,7 +20,8 @@ import {
   Mail,
   Loader2,
   CalendarDays,
-  User
+  User,
+  Eye
 } from 'lucide-react';
 import { CourseDetail, Semester, Student } from '@/types/course';
 import { apiService } from '@/services/api';
@@ -96,6 +97,10 @@ const CourseDetails = () => {
   }
 
   const currentSemester = getCurrentSemester(course.semesters);
+
+  const handleViewSubjects = (semesterId: string) => {
+    navigate(`/courses/${course.id}/semesters/${semesterId}/subjects`);
+  };
 
   return (
     <div className="flex-1 space-y-6 p-6 animate-fade-in">
@@ -234,6 +239,7 @@ const CourseDetails = () => {
                       <TableHead>Data de Início</TableHead>
                       <TableHead>Data de Fim</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Ações</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -258,6 +264,17 @@ const CourseDetails = () => {
                             >
                               {isActive ? 'Ativo' : isPast ? 'Finalizado' : 'Futuro'}
                             </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleViewSubjects(semester.id)}
+                              className="flex items-center gap-1"
+                            >
+                              <Eye className="h-3 w-3" />
+                              Disciplinas
+                            </Button>
                           </TableCell>
                         </TableRow>
                       );

@@ -7,6 +7,7 @@ import Dashboard from '@/pages/Dashboard';
 import Users from '@/pages/Users';
 import Courses from '@/pages/Courses';
 import CourseDetail from '@/pages/CourseDetail';
+import Subjects from '@/pages/Subjects';
 import NotFound from '@/pages/NotFound';
 
 const AuthenticatedApp = () => {
@@ -20,6 +21,7 @@ const AuthenticatedApp = () => {
           <Route path="/users" element={<Users />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:id" element={<CourseDetail />} />
+          <Route path="/courses/:courseId/semesters/:semesterId/subjects" element={<Subjects />} />
           {/* Placeholder routes for future pages */}
           <Route path="/semesters" element={<Dashboard />} />
           <Route path="/subjects" element={<Dashboard />} />

@@ -51,6 +51,29 @@ export interface CourseDetailResponse {
 }
 
 // Tipos para estatísticas
+export interface Subject {
+  id: string;
+  name: string;
+  code: string;
+  credits: number;
+  semester_id: string;
+  teacher_id: string;
+  created_at: string;
+  updated_at: string;
+  course_id: string;
+  teacher_name: string;
+  teacher_email: string;
+  semester_code: string;
+  course_name: string;
+  course_code: string;
+}
+
+export interface SubjectsResponse {
+  success: boolean;
+  data: Subject[];
+  message: string;
+}
+
 export interface CourseStats {
   totalStudents: number;
   totalSemesters: number;

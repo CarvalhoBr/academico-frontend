@@ -1,6 +1,6 @@
 import { API_CONFIG, getAuthToken } from '@/config/api';
 import { WhoAmIResponse } from '@/types/permissions';
-import { CoursesListResponse, CourseDetailResponse } from '@/types/course';
+import { CoursesListResponse, CourseDetailResponse, SubjectsResponse } from '@/types/course';
 
 // Tipos para as requisições
 export interface LoginRequest {
@@ -235,6 +235,13 @@ export const apiService = {
       return apiRequest<void>(`${API_CONFIG.ENDPOINTS.COURSES}/${id}`, {
         method: 'DELETE',
       });
+    },
+
+    /**
+     * Obtém as disciplinas de um semestre específico
+     */
+    async getSubjects(courseId: string, semesterId: string): Promise<SubjectsResponse> {
+      return apiRequest<SubjectsResponse>(`${API_CONFIG.ENDPOINTS.COURSES}/${courseId}/${semesterId}/subjects`);
     },
   },
 };

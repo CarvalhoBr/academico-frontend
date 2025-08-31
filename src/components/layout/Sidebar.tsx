@@ -7,14 +7,10 @@ import { usePermissions } from '@/contexts/PermissionsContext';
 import { RESOURCE_ROUTES } from '@/types/permissions';
 import { 
   GraduationCap, 
-  LayoutDashboard, 
   Users, 
   BookOpen, 
   Calendar, 
-  FileText,
-  UserCheck,
-  LogOut,
-  ChevronDown
+  LogOut
 } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -34,21 +30,12 @@ const Sidebar = ({ className }: SidebarProps) => {
       case 'users': return Users;
       case 'courses': return BookOpen;
       case 'semesters': return Calendar;
-      case 'subjects': return FileText;
-      case 'enrollments': return UserCheck;
-      case 'reports': return FileText;
-      default: return FileText;
+      default: return BookOpen;
     }
   };
 
   // Criar itens de navegação baseados nas permissões do usuário
   const navigationItems = [
-    {
-      title: 'Dashboard',
-      icon: LayoutDashboard,
-      path: '/',
-      isAllowed: true // Dashboard sempre visível
-    },
     ...getAvailableResources()
       .filter(resource => hasPermission(resource.name, 'read')) // Só mostrar se tem permissão de leitura
       .map(resource => ({

@@ -24,8 +24,6 @@ export const API_CONFIG = {
     USERS: '/users',
     COURSES: '/courses',
     SEMESTERS: '/semesters',
-    SUBJECTS: '/subjects',
-    ENROLLMENTS: '/enrollments',
   }
 } as const;
 

@@ -52,9 +52,6 @@ export const RESOURCE_ROUTES: Record<string, string> = {
   users: '/users',
   courses: '/courses',
   semesters: '/semesters',
-  subjects: '/subjects',
-  enrollments: '/enrollments',
-  reports: '/reports',
 } as const;
 
 // Mapeamento de recursos para ícones (para usar na sidebar)
@@ -62,7 +59,4 @@ export const RESOURCE_ICONS: Record<string, string> = {
   users: 'Users',
   courses: 'BookOpen',
   semesters: 'Calendar',
-  subjects: 'GraduationCap',
-  enrollments: 'UserCheck',
-  reports: 'FileText',
 } as const;

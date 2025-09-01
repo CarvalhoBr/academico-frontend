@@ -28,10 +28,12 @@ import { CourseDetail, Semester, Student } from '@/types/course';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
 import SubjectsList from '@/components/subjects/SubjectsList';
+import { usePermissions } from '@/contexts/PermissionsContext';
 
 const CourseDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { hasPermission } = usePermissions();
   const [course, setCourse] = useState<CourseDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -175,17 +177,19 @@ const CourseDetails = () => {
 
         {/* Statistics */}
         <div className="space-y-4">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="flex items-center justify-center mb-2">
-                  <Users className="h-8 w-8 text-primary" />
+          {hasPermission('courses', 'listStudents') && (
+            <Card>
+              <CardContent className="pt-6">
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-2">
+                    <Users className="h-8 w-8 text-primary" />
+                  </div>
+                  <div className="text-2xl font-bold text-foreground">{course.students.length}</div>
+                  <div className="text-sm text-muted-foreground">Estudantes</div>
                 </div>
-                <div className="text-2xl font-bold text-foreground">{course.students.length}</div>
-                <div className="text-sm text-muted-foreground">Estudantes</div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           <Card>
             <CardContent className="pt-6">
@@ -208,10 +212,12 @@ const CourseDetails = () => {
             <FileText className="h-4 w-4" />
             Disciplinas
           </TabsTrigger>
-          <TabsTrigger value="students" className="flex items-center gap-2">
-            <User className="h-4 w-4" />
-            Alunos ({course.students.length})
-          </TabsTrigger>
+          {hasPermission('courses', 'listStudents') && (
+            <TabsTrigger value="students" className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              Alunos ({course.students.length})
+            </TabsTrigger>
+          )}
         </TabsList>
 
         {/* Disciplinas Tab */}
@@ -220,7 +226,8 @@ const CourseDetails = () => {
         </TabsContent>
 
         {/* Estudantes Tab */}
-        <TabsContent value="students">
+        {hasPermission('courses', 'listStudents') && (
+          <TabsContent value="students">
           <Card>
             <CardHeader>
               <CardTitle>Estudantes do Curso</CardTitle>
@@ -269,6 +276,7 @@ const CourseDetails = () => {
             </CardContent>
           </Card>
         </TabsContent>
+        )}
       </Tabs>
     </div>
   );

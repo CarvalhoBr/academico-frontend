@@ -9,7 +9,8 @@ export type ResourceAction =
   | 'import'
   | 'approve'
   | 'reject'
-  | 'createSubject';
+  | 'createSubject'
+  | 'listStudents';
 
 export interface Resource {
   name: string;

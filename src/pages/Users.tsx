@@ -26,6 +26,7 @@ import {
 import { User as UserType } from '@/types/academic';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
+import { formatDate } from '@/utils/dateUtils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -209,9 +210,9 @@ const Users = () => {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {user.courseName ? (
+                      {user.course_name ? (
                         <span className="text-sm text-muted-foreground">
-                          {user.courseName}
+                          {user.course_name}
                         </span>
                       ) : (
                         <span className="text-sm text-muted-foreground italic">
@@ -221,7 +222,7 @@ const Users = () => {
                     </TableCell>
                     <TableCell>
                       <span className="text-sm text-muted-foreground">
-                        {new Date(user.created_at).toLocaleDateString('pt-BR')}
+                        {formatDate(user.created_at)}
                       </span>
                     </TableCell>
                     <TableCell>

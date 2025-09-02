@@ -227,7 +227,7 @@ export const apiService = {
     async addCourse(userId: string, courseId: string): Promise<UserCoursesResponse> {
       return apiRequest<UserCoursesResponse>(`${API_CONFIG.ENDPOINTS.USERS}/${userId}/courses`, {
         method: 'POST',
-        body: JSON.stringify({ courseId }),
+        body: JSON.stringify({ course_id: courseId }),
       });
     },
 
@@ -307,6 +307,24 @@ export const apiService = {
       return apiRequest<any>(`${API_CONFIG.ENDPOINTS.COURSES}/${courseId}/subjects`, {
         method: 'POST',
         body: JSON.stringify(subject),
+      });
+    },
+
+    /**
+     * Inscreve um usuário em uma disciplina
+     */
+    async enrollSubject(courseId: string, subjectId: string, userId: string): Promise<any> {
+      return apiRequest<any>(`${API_CONFIG.ENDPOINTS.COURSES}/${courseId}/subjects/${subjectId}/enroll/${userId}`, {
+        method: 'POST',
+      });
+    },
+
+    /**
+     * Remove a inscrição de um usuário de uma disciplina
+     */
+    async unenrollSubject(courseId: string, subjectId: string, userId: string): Promise<any> {
+      return apiRequest<any>(`${API_CONFIG.ENDPOINTS.COURSES}/${courseId}/subjects/${subjectId}/enrollment/${userId}`, {
+        method: 'DELETE',
       });
     },
   },

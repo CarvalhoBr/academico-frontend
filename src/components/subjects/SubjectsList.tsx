@@ -22,13 +22,18 @@ import {
   User, 
   Calendar,
   Loader2,
-  Plus
+  Plus,
+  UserPlus,
+  UserMinus
 } from 'lucide-react';
 import { Semester, Subject } from '@/types/course';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
 import CreateSubjectModal from './CreateSubjectModal';
 import PermissionGuard from '@/components/common/PermissionGuard';
+import { useAuth } from '@/contexts/AuthContext';
+import { usePermissions } from '@/contexts/PermissionsContext';
+import { formatDate } from '@/utils/dateUtils';
 
 interface SubjectsListProps {
   courseId: string;
@@ -41,10 +46,13 @@ interface SemesterWithSubjects extends Semester {
 }
 
 const SubjectsList: React.FC<SubjectsListProps> = ({ courseId, semesters }) => {
+  const { user } = useAuth();
+  const { hasPermission } = usePermissions();
   const [semestersWithSubjects, setSemestersWithSubjects] = useState<SemesterWithSubjects[]>([]);
   const [expandedSemesters, setExpandedSemesters] = useState<Set<string>>(new Set());
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [enrollingSubjects, setEnrollingSubjects] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const initialSemesters = semesters.map(semester => ({
@@ -115,9 +123,87 @@ const SubjectsList: React.FC<SubjectsListProps> = ({ courseId, semesters }) => {
     });
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
+  const handleEnrollSubject = async (subjectId: string, semesterId: string) => {
+    if (!user) {
+      toast.error('Usuário não autenticado');
+      return;
+    }
+
+    setEnrollingSubjects(prev => new Set(prev).add(subjectId));
+
+    try {
+      await apiService.courses.enrollSubject(courseId, subjectId, user.id);
+      
+      // Atualizar estado local
+      setSemestersWithSubjects(prev => 
+        prev.map(semester => 
+          semester.id === semesterId 
+            ? {
+                ...semester,
+                subjects: semester.subjects.map(subject =>
+                  subject.id === subjectId
+                    ? { ...subject, enrolled: true }
+                    : subject
+                )
+              }
+            : semester
+        )
+      );
+
+      toast.success('Inscrito na disciplina com sucesso!');
+    } catch (error) {
+      console.error('Erro ao inscrever na disciplina:', error);
+      toast.error('Erro ao inscrever na disciplina');
+    } finally {
+      setEnrollingSubjects(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(subjectId);
+        return newSet;
+      });
+    }
   };
+
+  const handleUnenrollSubject = async (subjectId: string, semesterId: string) => {
+    if (!user) {
+      toast.error('Usuário não autenticado');
+      return;
+    }
+
+    setEnrollingSubjects(prev => new Set(prev).add(subjectId));
+
+    try {
+      await apiService.courses.unenrollSubject(courseId, subjectId, user.id);
+      
+      // Atualizar estado local
+      setSemestersWithSubjects(prev => 
+        prev.map(semester => 
+          semester.id === semesterId 
+            ? {
+                ...semester,
+                subjects: semester.subjects.map(subject =>
+                  subject.id === subjectId
+                    ? { ...subject, enrolled: false }
+                    : subject
+                )
+              }
+            : semester
+        )
+      );
+
+      toast.success('Desinscrição realizada com sucesso!');
+    } catch (error) {
+      console.error('Erro ao desinscrever da disciplina:', error);
+      toast.error('Erro ao desinscrever da disciplina');
+    } finally {
+      setEnrollingSubjects(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(subjectId);
+        return newSet;
+      });
+    }
+  };
+
+
 
   const getCurrentSemester = () => {
     const now = new Date();
@@ -240,33 +326,76 @@ const SubjectsList: React.FC<SubjectsListProps> = ({ courseId, semesters }) => {
                               <TableHead>Créditos</TableHead>
                               <TableHead>Professor</TableHead>
                               <TableHead>Data de Criação</TableHead>
+                              {hasPermission('courses', 'enrollSubject') && (
+                                <TableHead>Ações</TableHead>
+                              )}
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {semester.subjects.map((subject) => (
-                              <TableRow key={subject.id}>
-                                <TableCell className="font-mono">
-                                  {subject.code}
-                                </TableCell>
-                                <TableCell className="font-medium">
-                                  {subject.name}
-                                </TableCell>
-                                <TableCell>
-                                  <Badge variant="outline">
-                                    {subject.credits} créditos
-                                  </Badge>
-                                </TableCell>
-                                <TableCell>
-                                  <div className="flex items-center gap-2">
-                                    <User className="h-3 w-3 text-muted-foreground" />
-                                    <span>{subject.teacher_name}</span>
-                                  </div>
-                                </TableCell>
-                                <TableCell>
-                                  {formatDate(subject.created_at)}
-                                </TableCell>
-                              </TableRow>
-                            ))}
+                            {semester.subjects.map((subject) => {
+                              const isEnrolled = subject.enrolled ?? false;
+                              const isProcessing = enrollingSubjects.has(subject.id);
+                              
+                              return (
+                                <TableRow key={subject.id}>
+                                  <TableCell className="font-mono">
+                                    {subject.code}
+                                  </TableCell>
+                                  <TableCell className="font-medium">
+                                    {subject.name}
+                                  </TableCell>
+                                  <TableCell>
+                                    <Badge variant="outline">
+                                      {subject.credits} créditos
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex items-center gap-2">
+                                      <User className="h-3 w-3 text-muted-foreground" />
+                                      <span>{subject.teacher_name}</span>
+                                    </div>
+                                  </TableCell>
+                                  <TableCell>
+                                    {formatDate(subject.created_at)}
+                                  </TableCell>
+                                  {hasPermission('courses', 'enrollSubject') && (
+                                    <TableCell>
+                                      {isEnrolled ? (
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => handleUnenrollSubject(subject.id, semester.id)}
+                                          disabled={isProcessing}
+                                          className="text-destructive hover:text-destructive"
+                                        >
+                                          {isProcessing ? (
+                                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                                          ) : (
+                                            <UserMinus className="h-3 w-3 mr-1" />
+                                          )}
+                                          Desinscrever-se
+                                        </Button>
+                                      ) : (
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => handleEnrollSubject(subject.id, semester.id)}
+                                          disabled={isProcessing}
+                                          className="text-primary hover:text-primary"
+                                        >
+                                          {isProcessing ? (
+                                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                                          ) : (
+                                            <UserPlus className="h-3 w-3 mr-1" />
+                                          )}
+                                          Inscrever-se
+                                        </Button>
+                                      )}
+                                    </TableCell>
+                                  )}
+                                </TableRow>
+                              );
+                            })}
                           </TableBody>
                         </Table>
                       )}

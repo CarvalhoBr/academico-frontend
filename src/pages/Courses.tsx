@@ -28,6 +28,7 @@ import {
 import { Course } from '@/types/course';
 import { apiService } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '@/utils/dateUtils';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -210,7 +211,7 @@ const Courses = () => {
 
                 {/* Creation Date */}
                 <div className="text-xs text-muted-foreground pt-2 border-t">
-                  Criado em {new Date(course.created_at).toLocaleDateString('pt-BR')}
+                  Criado em {formatDate(course.created_at)}
                 </div>
               </CardContent>
             </Card>

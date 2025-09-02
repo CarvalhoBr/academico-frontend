@@ -82,6 +82,7 @@ export interface Subject {
   semester_code: string;
   course_name: string;
   course_code: string;
+  enrolled?: boolean;
 }
 
 export interface SubjectsResponse {
@@ -94,8 +95,8 @@ export interface CreateSubjectRequest {
   name: string;
   code: string;
   credits: number;
-  semesterId: string;
-  teacherId: string;
+  semester_id: string;
+  teacher_id: string;
 }
 
 // Tipos para semestres
@@ -116,18 +117,18 @@ export interface SemestersListResponse {
 
 export interface CreateSemesterRequest {
   code: string;
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
 }
 
 export interface UpdateSemesterRequest {
-  startDate: string;
-  endDate: string;
+  start_date: string;
+  end_date: string;
 }
 
 export interface CourseStats {
-  totalStudents: number;
-  totalSemesters: number;
-  activeSemesters: number;
-  currentSemester?: Semester;
+  total_students: number;
+  total_semesters: number;
+  active_semesters: number;
+  current_semester?: Semester;
 }

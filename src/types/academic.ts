@@ -4,8 +4,8 @@ export interface User {
   name: string;
   email: string;
   role: 'student' | 'teacher' | 'coordinator' | 'admin';
-  courseId?: string;
-  courseName?: string;
+  course_id?: string;
+  course_name?: string;
   created_at: string;
   updated_at: string;
 }
@@ -15,21 +15,21 @@ export interface Course {
   name: string;
   code: string;
   description?: string;
-  coordinatorId?: string;
-  coordinatorName?: string;
-  createdAt: string;
-  updatedAt: string;
+  coordinator_id?: string;
+  coordinator_name?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Semester {
   id: string;
   code: string;
-  courseId: string;
-  courseName?: string;
-  startDate: string;
-  endDate: string;
-  createdAt: string;
-  updatedAt: string;
+  course_id: string;
+  course_name?: string;
+  start_date: string;
+  end_date: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Subject {
@@ -37,23 +37,23 @@ export interface Subject {
   name: string;
   code: string;
   credits: number;
-  semesterId: string;
-  teacherId?: string;
-  teacherName?: string;
-  createdAt: string;
-  updatedAt: string;
+  semester_id: string;
+  teacher_id?: string;
+  teacher_name?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Enrollment {
   id: string;
-  studentId: string;
-  studentName?: string;
-  subjectId: string;
-  subjectName?: string;
-  enrollmentDate: string;
+  student_id: string;
+  student_name?: string;
+  subject_id: string;
+  subject_name?: string;
+  enrollment_date: string;
   status: 'active' | 'completed' | 'dropped';
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface AuthUser {
@@ -61,15 +61,15 @@ export interface AuthUser {
   name: string;
   email: string;
   role: User['role'];
-  courseId?: string;
-  courseName?: string;
+  course_id?: string;
+  course_name?: string;
 }
 
 export interface DashboardStats {
-  totalUsers: number;
-  totalCourses: number;
-  totalSubjects: number;
-  totalEnrollments: number;
+  total_users: number;
+  total_courses: number;
+  total_subjects: number;
+  total_enrollments: number;
 }
 
 export interface UsersListResponse {
@@ -97,5 +97,5 @@ export interface UserUpdateRequest {
 }
 
 export interface UserCourseRequest {
-  courseId: string;
+  course_id: string;
 }

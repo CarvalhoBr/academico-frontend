@@ -29,6 +29,7 @@ import { apiService } from '@/services/api';
 import { toast } from 'sonner';
 import SubjectsList from '@/components/subjects/SubjectsList';
 import { usePermissions } from '@/contexts/PermissionsContext';
+import { formatDate } from '@/utils/dateUtils';
 
 const CourseDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -67,9 +68,7 @@ const CourseDetails = () => {
     fetchCourseDetail();
   }, [id]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
-  };
+
 
   const getCurrentSemester = (semesters: Semester[]) => {
     const now = new Date();

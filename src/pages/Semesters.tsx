@@ -26,6 +26,7 @@ import {
 import { SemesterListItem, CreateSemesterRequest, UpdateSemesterRequest } from '@/types/course';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
+import { formatDate } from '@/utils/dateUtils';
 import {
   Dialog,
   DialogContent,
@@ -61,8 +62,8 @@ const Semesters = () => {
   // Form states
   const [formData, setFormData] = useState({
     code: '',
-    startDate: '',
-    endDate: ''
+    start_date: '',
+    end_date: ''
   });
 
   // Carregar semestres da API
@@ -104,12 +105,12 @@ const Semesters = () => {
   };
 
   const handleCreate = async () => {
-    if (!formData.code || !formData.startDate || !formData.endDate) {
+    if (!formData.code || !formData.start_date || !formData.end_date) {
       toast.error('Preencha todos os campos');
       return;
     }
 
-    if (new Date(formData.startDate) >= new Date(formData.endDate)) {
+    if (new Date(formData.start_date) >= new Date(formData.end_date)) {
       toast.error('A data de início deve ser anterior à data de fim');
       return;
     }
@@ -118,8 +119,8 @@ const Semesters = () => {
       setIsSubmitting(true);
       const requestData: CreateSemesterRequest = {
         code: formData.code,
-        startDate: formData.startDate,
-        endDate: formData.endDate
+        start_date: formData.start_date,
+        end_date: formData.end_date
       };
 
       const response = await apiService.semesters.create(requestData);
@@ -127,7 +128,7 @@ const Semesters = () => {
       if (response.success) {
         toast.success('Semestre criado com sucesso!');
         setIsCreateDialogOpen(false);
-        setFormData({ code: '', startDate: '', endDate: '' });
+        setFormData({ code: '', start_date: '', end_date: '' });
         fetchSemesters();
       } else {
         toast.error('Erro ao criar semestre');
@@ -145,7 +146,7 @@ const Semesters = () => {
       return;
     }
 
-    if (new Date(formData.startDate) >= new Date(formData.endDate)) {
+    if (new Date(formData.start_date) >= new Date(formData.end_date)) {
       toast.error('A data de início deve ser anterior à data de fim');
       return;
     }
@@ -153,8 +154,8 @@ const Semesters = () => {
     try {
       setIsSubmitting(true);
       const requestData: UpdateSemesterRequest = {
-        startDate: formData.startDate,
-        endDate: formData.endDate
+        start_date: formData.start_date,
+        end_date: formData.end_date
       };
 
       const response = await apiService.semesters.update(editingSemester.id, requestData);
@@ -163,7 +164,7 @@ const Semesters = () => {
         toast.success('Semestre atualizado com sucesso!');
         setIsEditDialogOpen(false);
         setEditingSemester(null);
-        setFormData({ code: '', startDate: '', endDate: '' });
+        setFormData({ code: '', start_date: '', end_date: '' });
         fetchSemesters();
       } else {
         toast.error('Erro ao atualizar semestre');
@@ -196,15 +197,13 @@ const Semesters = () => {
     setEditingSemester(semester);
     setFormData({
       code: semester.code,
-      startDate: semester.start_date.split('T')[0],
-      endDate: semester.end_date.split('T')[0]
+      start_date: semester.start_date.split('T')[0],
+      end_date: semester.end_date.split('T')[0]
     });
     setIsEditDialogOpen(true);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
-  };
+
 
   if (loading) {
     return (
@@ -265,8 +264,8 @@ const Semesters = () => {
                 <Input
                   id="startDate"
                   type="date"
-                  value={formData.startDate}
-                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  value={formData.start_date}
+                  onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
                 />
               </div>
               <div>
@@ -274,8 +273,8 @@ const Semesters = () => {
                 <Input
                   id="endDate"
                   type="date"
-                  value={formData.endDate}
-                  onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                  value={formData.end_date}
+                  onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
                 />
               </div>
             </div>
@@ -396,8 +395,8 @@ const Semesters = () => {
                                   <Input
                                     id="editStartDate"
                                     type="date"
-                                    value={formData.startDate}
-                                    onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                                    value={formData.start_date}
+                                    onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
                                   />
                                 </div>
                                 <div>
@@ -405,8 +404,8 @@ const Semesters = () => {
                                   <Input
                                     id="editEndDate"
                                     type="date"
-                                    value={formData.endDate}
-                                    onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                                    value={formData.end_date}
+                                    onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
                                   />
                                 </div>
                               </div>

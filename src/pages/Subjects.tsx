@@ -23,6 +23,7 @@ import {
 import { Subject } from '@/types/course';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
+import { formatDate } from '@/utils/dateUtils';
 
 const Subjects = () => {
   const { courseId, semesterId } = useParams<{ courseId: string; semesterId: string }>();
@@ -70,9 +71,7 @@ const Subjects = () => {
     fetchSubjects();
   }, [courseId, semesterId]);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR');
-  };
+
 
   if (loading) {
     return (

@@ -28,6 +28,7 @@ import {
 import { User as UserType, Course } from '@/types/academic';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
+import { formatDate } from '@/utils/dateUtils';
 import {
   Select,
   SelectContent,
@@ -328,14 +329,14 @@ const EditUser = () => {
             <div className="space-y-2">
               <Label>Data de Criação</Label>
               <p className="text-sm text-muted-foreground">
-                {new Date(user.created_at).toLocaleDateString('pt-BR')}
+                {formatDate(user.created_at)}
               </p>
             </div>
 
             <div className="space-y-2">
               <Label>Última Atualização</Label>
               <p className="text-sm text-muted-foreground">
-                {new Date(user.updated_at).toLocaleDateString('pt-BR')}
+                {formatDate(user.updated_at)}
               </p>
             </div>
           </CardContent>

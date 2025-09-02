@@ -43,8 +43,8 @@ const CreateSubjectModal: React.FC<CreateSubjectModalProps> = ({
     name: '',
     code: '',
     credits: 0,
-    semesterId: '',
-    teacherId: '',
+    semester_id: '',
+    teacher_id: '',
   });
 
   useEffect(() => {
@@ -69,7 +69,7 @@ const CreateSubjectModal: React.FC<CreateSubjectModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.code || !formData.semesterId || !formData.teacherId) {
+    if (!formData.name || !formData.code || !formData.semester_id || !formData.teacher_id) {
       toast.error('Preencha todos os campos obrigatórios');
       return;
     }
@@ -91,8 +91,8 @@ const CreateSubjectModal: React.FC<CreateSubjectModalProps> = ({
           name: '',
           code: '',
           credits: 0,
-          semesterId: '',
-          teacherId: '',
+          semester_id: '',
+          teacher_id: '',
         });
       } else {
         toast.error('Erro ao criar disciplina');
@@ -165,8 +165,8 @@ const CreateSubjectModal: React.FC<CreateSubjectModalProps> = ({
             <div className="space-y-2">
               <Label htmlFor="semester">Semestre *</Label>
               <Select
-                value={formData.semesterId}
-                onValueChange={(value) => handleInputChange('semesterId', value)}
+                value={formData.semester_id}
+                onValueChange={(value) => handleInputChange('semester_id', value)}
                 required
               >
                 <SelectTrigger>
@@ -186,8 +186,8 @@ const CreateSubjectModal: React.FC<CreateSubjectModalProps> = ({
           <div className="space-y-2">
             <Label htmlFor="teacher">Professor *</Label>
             <Select
-              value={formData.teacherId}
-              onValueChange={(value) => handleInputChange('teacherId', value)}
+              value={formData.teacher_id}
+              onValueChange={(value) => handleInputChange('teacher_id', value)}
               required
             >
               <SelectTrigger>

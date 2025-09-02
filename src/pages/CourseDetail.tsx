@@ -133,6 +133,8 @@ const CourseDetails = () => {
             </div>
           </div>
         </div>
+        
+
       </div>
 
       {/* Course Info */}
@@ -277,6 +279,8 @@ const CourseDetails = () => {
         </TabsContent>
         )}
       </Tabs>
+
+
     </div>
   );
 };

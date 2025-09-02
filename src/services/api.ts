@@ -8,7 +8,9 @@ import {
   CreateSemesterRequest,
   UpdateSemesterRequest,
   TeachersResponse,
-  CreateSubjectRequest
+  CreateSubjectRequest,
+  CreateCourseRequest,
+  CreateCourseResponse
 } from '@/types/course';
 import { 
   UsersListResponse, 
@@ -239,6 +241,13 @@ export const apiService = {
         method: 'DELETE',
       });
     },
+
+    /**
+     * Lista usuários por role
+     */
+    async listByRole(role: string): Promise<UsersListResponse> {
+      return apiRequest<UsersListResponse>(`${API_CONFIG.ENDPOINTS.USERS}/role/${role}`);
+    },
   },
 
   // Cursos
@@ -260,8 +269,8 @@ export const apiService = {
     /**
      * Cria um novo curso
      */
-    async create(course: any): Promise<any> {
-      return apiRequest<any>(API_CONFIG.ENDPOINTS.COURSES, {
+    async create(course: CreateCourseRequest): Promise<CreateCourseResponse> {
+      return apiRequest<CreateCourseResponse>(API_CONFIG.ENDPOINTS.COURSES, {
         method: 'POST',
         body: JSON.stringify(course),
       });

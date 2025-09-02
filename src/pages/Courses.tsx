@@ -29,6 +29,8 @@ import { Course } from '@/types/course';
 import { apiService } from '@/services/api';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '@/utils/dateUtils';
+import { usePermissions } from '@/contexts/PermissionsContext';
+import CreateCourseModal from '@/components/courses/CreateCourseModal';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,28 +43,30 @@ const Courses = () => {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { hasPermission } = usePermissions();
+
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.courses.list();
+      
+      if (response.success) {
+        setCourses(response.data);
+      } else {
+        setError('Erro ao carregar cursos');
+      }
+    } catch (err) {
+      setError('Erro ao conectar com a API');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Carregar cursos da API
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await apiService.courses.list();
-        
-        if (response.success) {
-          setCourses(response.data);
-        } else {
-          setError('Erro ao carregar cursos');
-        }
-      } catch (err) {
-        setError('Erro ao conectar com a API');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCourses();
   }, []);
 
@@ -86,10 +90,15 @@ const Courses = () => {
             Gerencie os cursos do sistema acadêmico
           </p>
         </div>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-          <Plus className="mr-2 h-4 w-4" />
-          Novo Curso
-        </Button>
+        {hasPermission('courses', 'create') && (
+          <Button 
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={() => setCreateModalOpen(true)}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Novo Curso
+          </Button>
+        )}
       </div>
 
       {/* Filters */}
@@ -235,6 +244,12 @@ const Courses = () => {
           </CardContent>
         </Card>
       )}
+
+      <CreateCourseModal
+        open={createModalOpen}
+        onOpenChange={setCreateModalOpen}
+        onSuccess={fetchCourses}
+      />
     </div>
   );
 };

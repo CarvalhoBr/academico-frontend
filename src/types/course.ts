@@ -99,6 +99,32 @@ export interface CreateSubjectRequest {
   teacher_id: string;
 }
 
+export interface CreateCourseRequest {
+  name: string;
+  code: string;
+  description?: string;
+  coordinator_id?: string;
+}
+
+export interface CreateCourseResponse {
+  success: boolean;
+  data: Course;
+  message: string;
+}
+
+export interface Coordinator {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+export interface CoordinatorsResponse {
+  success: boolean;
+  data: Coordinator[];
+  message: string;
+}
+
 // Tipos para semestres
 export interface SemesterListItem {
   id: string;

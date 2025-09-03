@@ -188,10 +188,10 @@ export const apiService = {
     },
 
     /**
-     * Cria um novo usuário
+     * Cria um novo usuário com role específica
      */
-    async create(user: any): Promise<any> {
-      return apiRequest<any>(API_CONFIG.ENDPOINTS.USERS, {
+    async create(role: string, user: { name: string; email: string; password: string }): Promise<any> {
+      return apiRequest<any>(`${API_CONFIG.ENDPOINTS.USERS}/${role}`, {
         method: 'POST',
         body: JSON.stringify(user),
       });

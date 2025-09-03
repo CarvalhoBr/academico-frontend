@@ -17,23 +17,16 @@ import {
   Plus, 
   Search, 
   Filter, 
-  Edit, 
-  Trash2, 
   Mail, 
-  User,
-  MoreHorizontal
+  User
 } from 'lucide-react';
 import { User as UserType } from '@/types/academic';
 import { apiService } from '@/services/api';
 import { toast } from 'sonner';
 import { formatDate } from '@/utils/dateUtils';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Loader2 } from 'lucide-react';
+import { useHasPermission } from '@/contexts/PermissionsContext';
+import CreateUserModal from '@/components/CreateUserModal';
 
 const Users = () => {
   const navigate = useNavigate();
@@ -41,6 +34,8 @@ const Users = () => {
   const [users, setUsers] = useState<UserType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const canCreateUsers = useHasPermission('users', 'create');
 
   useEffect(() => {
     fetchUsers();
@@ -106,10 +101,15 @@ const Users = () => {
             Gerencie usuários do sistema acadêmico
           </p>
         </div>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-          <Plus className="mr-2 h-4 w-4" />
-          Novo Usuário
-        </Button>
+        {canCreateUsers && (
+          <Button 
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={() => setIsCreateModalOpen(true)}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Novo Usuário
+          </Button>
+        )}
       </div>
 
       {/* Filters */}
@@ -180,7 +180,6 @@ const Users = () => {
                   <TableHead>Perfil</TableHead>
                   <TableHead>Curso</TableHead>
                   <TableHead>Data de Criação</TableHead>
-                  <TableHead className="w-[100px]">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -225,25 +224,6 @@ const Users = () => {
                         {formatDate(user.created_at)}
                       </span>
                     </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => navigate(`/users/${user.id}/edit`)}>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Editar
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Excluir
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -251,6 +231,12 @@ const Users = () => {
           )}
         </CardContent>
       </Card>
+
+      <CreateUserModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={fetchUsers}
+      />
     </div>
   );
 };

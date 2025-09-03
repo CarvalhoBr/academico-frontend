@@ -17,8 +17,10 @@ import {
   Plus, 
   Search, 
   Filter, 
+  Edit, 
   Mail, 
-  User
+  User,
+  MoreHorizontal
 } from 'lucide-react';
 import { User as UserType } from '@/types/academic';
 import { apiService } from '@/services/api';
@@ -27,6 +29,13 @@ import { formatDate } from '@/utils/dateUtils';
 import { Loader2 } from 'lucide-react';
 import { useHasPermission } from '@/contexts/PermissionsContext';
 import CreateUserModal from '@/components/CreateUserModal';
+import EditUserModal from '@/components/EditUserModal';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const Users = () => {
   const navigate = useNavigate();
@@ -35,7 +44,10 @@ const Users = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<UserType | null>(null);
   const canCreateUsers = useHasPermission('users', 'create');
+  const canUpdateUsers = useHasPermission('users', 'update');
 
   useEffect(() => {
     fetchUsers();
@@ -180,6 +192,7 @@ const Users = () => {
                   <TableHead>Perfil</TableHead>
                   <TableHead>Curso</TableHead>
                   <TableHead>Data de Criação</TableHead>
+                  <TableHead className="w-[100px]">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -224,6 +237,26 @@ const Users = () => {
                         {formatDate(user.created_at)}
                       </span>
                     </TableCell>
+                    <TableCell>
+                      {canUpdateUsers && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => {
+                              setSelectedUser(user);
+                              setIsEditModalOpen(true);
+                            }}>
+                              <Edit className="mr-2 h-4 w-4" />
+                              Editar
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -236,6 +269,16 @@ const Users = () => {
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={fetchUsers}
+      />
+
+      <EditUserModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedUser(null);
+        }}
+        onSuccess={fetchUsers}
+        user={selectedUser}
       />
     </div>
   );
